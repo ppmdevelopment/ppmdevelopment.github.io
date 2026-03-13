@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PPM Development</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f3ef;
+    --surface: #ffffff;
+    --text: #0d0d0d;
+    --text-muted: #6b6b6b;
+    --accent: #1a1a2e;
+    --accent2: #e8ff00;
+    --border: #e2e0db;
+    --card-bg: #ffffff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.4rem 4rem;
+    background: rgba(245,243,239,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.3rem;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .nav-logo span {
+    display: inline-block;
+    background: var(--accent);
+    color: var(--accent2);
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-right: 4px;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: var(--text-muted);
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--text); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 4rem;
+    padding-top: 6rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-tag {
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.2s;
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(3.5rem, 8vw, 7rem);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    max-width: 900px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.4s;
+  }
+
+  .hero h1 .highlight {
+    position: relative;
+    display: inline-block;
+  }
+
+  .hero h1 .highlight::after {
+    content: '';
+    position: absolute;
+    bottom: 4px;
+    left: 0;
+    right: 0;
+    height: 8px;
+    background: var(--accent2);
+    z-index: -1;
+    transform: scaleX(0);
+    transform-origin: left;
+    animation: lineReveal 0.6s ease forwards 1.2s;
+  }
+
+  .hero-sub {
+    margin-top: 2.5rem;
+    font-size: 1.15rem;
+    font-weight: 300;
+    color: var(--text-muted);
+    max-width: 480px;
+    line-height: 1.6;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.6s;
+  }
+
+  .hero-cta {
+    margin-top: 3rem;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.8s;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: var(--accent2);
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 0.05em;
+    padding: 0.9rem 2rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(13,13,30,0.18);
+  }
+
+  .btn-secondary {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: color 0.2s;
+  }
+
+  .btn-secondary:hover { color: var(--text); }
+
+  .hero-bg-number {
+    position: absolute;
+    right: -2rem;
+    bottom: -4rem;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 28vw;
+    color: rgba(13,13,30,0.04);
+    letter-spacing: -0.05em;
+    pointer-events: none;
+    user-select: none;
+    line-height: 1;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    padding: 2.5rem 4rem;
+    display: flex;
+    gap: 4rem;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    overflow-x: auto;
+  }
+
+  .stat {
+    flex-shrink: 0;
+  }
+
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 2rem;
+    letter-spacing: -0.03em;
+    color: var(--text);
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 0.2rem;
+    letter-spacing: 0.05em;
+  }
+
+  /* SECTION */
+  section {
+    padding: 7rem 4rem;
+  }
+
+  .section-tag {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    margin-bottom: 1rem;
+  }
+
+  /* ABOUT */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    margin-top: 4rem;
+    align-items: start;
+  }
+
+  .about-text p {
+    font-size: 1.05rem;
+    line-height: 1.75;
+    color: var(--text-muted);
+    margin-bottom: 1.2rem;
+  }
+
+  .about-text p strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .skill-pill {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .skill-pill:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  .skill-pill-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-bottom: 0.2rem;
+  }
+
+  .skill-pill-desc {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
+  /* PROJECTS */
+  .projects-section {
+    background: var(--accent);
+    color: white;
+  }
+
+  .projects-section .section-tag { color: rgba(255,255,255,0.4); }
+  .projects-section .section-title { color: white; }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-top: 4rem;
+  }
+
+  .project-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 2.5rem;
+    transition: background 0.2s, transform 0.2s;
+    cursor: default;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .project-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent2);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+
+  .project-card:hover::before { transform: scaleX(1); }
+  .project-card:hover {
+    background: rgba(255,255,255,0.08);
+    transform: translateY(-3px);
+  }
+
+  .project-card.featured {
+    grid-column: span 2;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: center;
+  }
+
+  .project-badge {
+    display: inline-block;
+    background: var(--accent2);
+    color: var(--accent);
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 4px;
+    margin-bottom: 1.2rem;
+  }
+
+  .project-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.6rem;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.8rem;
+  }
+
+  .project-desc {
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.65;
+  }
+
+  .project-tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .tech-tag {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.5);
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+
+  .project-visual {
+    aspect-ratio: 4/3;
+    background: rgba(255,255,255,0.04);
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .ai-visual {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .ai-nodes {
+    position: relative;
+    width: 200px;
+    height: 200px;
+  }
+
+  .ai-node {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--accent2);
+    opacity: 0.8;
+  }
+
+  .ai-node::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1px solid rgba(232,255,0,0.2);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: translate(-50%,-50%) scale(1); opacity: 0.5; }
+    50% { transform: translate(-50%,-50%) scale(1.6); opacity: 0; }
+  }
+
+  .ai-line {
+    position: absolute;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(232,255,0,0.3), transparent);
+    transform-origin: left center;
+  }
+
+  /* ABOUT ME personal */
+  .personal-section {
+    background: var(--surface);
+  }
+
+  .interests-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 4rem;
+  }
+
+  .interest-card {
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+
+  .interest-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-4px);
+  }
+
+  .interest-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .interest-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .interest-desc {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* CONTACT */
+  .contact-section {
+    text-align: center;
+    padding: 8rem 4rem;
+  }
+
+  .contact-section .section-title {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    margin-bottom: 1rem;
+  }
+
+  .contact-sub {
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    margin-bottom: 3rem;
+  }
+
+  .contact-links {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .contact-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.8rem 1.8rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--text);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: border-color 0.2s, background 0.2s, transform 0.2s;
+  }
+
+  .contact-link:hover {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: white;
+    transform: translateY(-2px);
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 2rem 4rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
+  footer .footer-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    color: var(--text);
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes lineReveal {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* DIVIDER */
+  .divider {
+    width: 40px;
+    height: 3px;
+    background: var(--accent);
+    margin: 1.5rem 0;
+    border-radius: 2px;
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    .hero, section, .stats-bar { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .about-grid, .projects-grid, .interests-row { grid-template-columns: 1fr; }
+    .project-card.featured { grid-column: span 1; grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 1rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-logo"><span>PPM</span> Development</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#personal">Skills</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-tag">// PPM Development — Est. 2025</p>
+  <h1>Building things<br>that <span class="highlight">matter.</span></h1>
+  <p class="hero-sub">Developer, thinker, creator. I build software with purpose — from AI systems to clean digital experiences.</p>
+  <div class="hero-cta">
+    <a href="#projects" class="btn-primary">View Projects →</a>
+    <a href="#contact" class="btn-secondary">Get in touch ↓</a>
+  </div>
+  <div class="hero-bg-number">PPM</div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stat">
+    <div class="stat-num">10+</div>
+    <div class="stat-label">Grade — 10th Class</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">AI</div>
+    <div class="stat-label">Main Focus Area</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">Python</div>
+    <div class="stat-label">Primary Language</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">∞</div>
+    <div class="stat-label">Ideas in Progress</div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <p class="section-tag reveal">// Who I Am</p>
+  <h2 class="section-title reveal">Not your average<br>10th grader.</h2>
+  <div class="about-grid">
+    <div class="about-text reveal">
+      <p>I'm <strong>ppm</strong> — a developer, musician, and strategist. While most people my age are just figuring things out, I'm already building AI systems, mastering classical piano, and competing at high levels in strategy games.</p>
+      <p>PPM Development is my personal brand — a space where I build, experiment, and ship things that push my limits. I believe in <strong>doing things properly</strong>, not just getting them done.</p>
+      <p>My biggest project so far: <strong>Peng AI</strong> — an AI system I designed and built from the ground up, because I wanted to understand how intelligence actually works, not just use tools others made.</p>
+    </div>
+    <div class="skills-grid reveal">
+      <div class="skill-pill">
+        <div class="skill-pill-name">Python</div>
+        <div class="skill-pill-desc">Core language, AI & scripting</div>
+      </div>
+      <div class="skill-pill">
+        <div class="skill-pill-name">AI / ML</div>
+        <div class="skill-pill-desc">Peng AI project</div>
+      </div>
+      <div class="skill-pill">
+        <div class="skill-pill-name">Web Dev</div>
+        <div class="skill-pill-desc">HTML, CSS, JS</div>
+      </div>
+      <div class="skill-pill">
+        <div class="skill-pill-name">Logic & Strategy</div>
+        <div class="skill-pill-desc">Applied via Weiqi & code</div>
+      </div>
+      <div class="skill-pill">
+        <div class="skill-pill-name">Classical Piano</div>
+        <div class="skill-pill-desc">Years of dedicated practice</div>
+      </div>
+      <div class="skill-pill">
+        <div class="skill-pill-name">Problem Solving</div>
+        <div class="skill-pill-desc">Fast, creative, precise</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects" class="projects-section">
+  <p class="section-tag reveal">// What I've Built</p>
+  <h2 class="section-title reveal">Projects.</h2>
+  <div class="projects-grid">
+
+    <div class="project-card featured reveal">
+      <div>
+        <div class="project-badge">⭐ Featured Project</div>
+        <h3 class="project-title">Peng AI</h3>
+        <p class="project-desc">An AI system I designed and built myself — not using a no-code tool, but writing the logic from scratch. Peng AI was my deep dive into understanding how AI actually works: training, decision-making, and building something that learns.</p>
+        <div class="project-tech">
+          <span class="tech-tag">Python</span>
+          <span class="tech-tag">Machine Learning</span>
+          <span class="tech-tag">Custom Architecture</span>
+        </div>
+      </div>
+      <div class="project-visual">
+        <div class="ai-visual">
+          <div class="ai-nodes">
+            <div class="ai-node" style="top:10%;left:45%;"></div>
+            <div class="ai-node" style="top:35%;left:15%;"></div>
+            <div class="ai-node" style="top:35%;left:75%;"></div>
+            <div class="ai-node" style="top:60%;left:30%;"></div>
+            <div class="ai-node" style="top:60%;left:60%;"></div>
+            <div class="ai-node" style="top:85%;left:45%;"></div>
+            <svg style="position:absolute;top:0;left:0;width:100%;height:100%" viewBox="0 0 200 200">
+              <line x1="96" y1="26" x2="44" y2="80" stroke="rgba(232,255,0,0.2)" stroke-width="1"/>
+              <line x1="96" y1="26" x2="156" y2="80" stroke="rgba(232,255,0,0.2)" stroke-width="1"/>
+              <line x1="44" y1="80" x2="74" y2="126" stroke="rgba(232,255,0,0.2)" stroke-width="1"/>
+              <line x1="156" y1="80" x2="124" y2="126" stroke="rgba(232,255,0,0.2)" stroke-width="1"/>
+              <line x1="74" y1="126" x2="96" y2="176" stroke="rgba(232,255,0,0.2)" stroke-width="1"/>
+              <line x1="124" y1="126" x2="96" y2="176" stroke="rgba(232,255,0,0.2)" stroke-width="1"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-badge">In Progress</div>
+      <h3 class="project-title">This Website</h3>
+      <p class="project-desc">PPM Development — my personal brand, built from scratch. Clean, modern, professional. Because first impressions matter.</p>
+      <div class="project-tech">
+        <span class="tech-tag">HTML</span>
+        <span class="tech-tag">CSS</span>
+        <span class="tech-tag">JavaScript</span>
+      </div>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-badge">Next Up</div>
+      <h3 class="project-title">Coming Soon</h3>
+      <p class="project-desc">I'm always working on something new. The next project is already in my head. Check back soon.</p>
+      <div class="project-tech">
+        <span class="tech-tag">???</span>
+        <span class="tech-tag">TBA</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PERSONAL / SKILLS -->
+<section id="personal" class="personal-section">
+  <p class="section-tag reveal">// Beyond the Screen</p>
+  <h2 class="section-title reveal">More than just<br>a developer.</h2>
+  <div class="interests-row">
+    <div class="interest-card reveal">
+      <div class="interest-icon">🎹</div>
+      <div class="interest-title">Classical Piano</div>
+      <p class="interest-desc">Years of dedicated practice. Piano taught me that mastery takes time, precision, and repetition — the same mindset I bring to code.</p>
+    </div>
+    <div class="interest-card reveal">
+      <div class="interest-icon">⚫</div>
+      <div class="interest-title">Weiqi (围棋)</div>
+      <p class="interest-desc">One of the world's oldest and most complex strategy games. Playing Weiqi sharpened my ability to think several steps ahead and see the bigger picture.</p>
+    </div>
+    <div class="interest-card reveal">
+      <div class="interest-icon">🏓</div>
+      <div class="interest-title">Table Tennis</div>
+      <p class="interest-desc">Precision, reflexes, adaptability. What starts as a sport becomes a lesson in reading patterns and reacting faster than your opponent.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="contact-section">
+  <p class="section-tag" style="text-align:center; margin-bottom:1rem; opacity:0; animation: fadeUp 0.7s ease forwards 0.2s;">// Let's Talk</p>
+  <h2 class="section-title" style="opacity:0; animation: fadeUp 0.7s ease forwards 0.4s;">Got a project idea?<br>Let's build it.</h2>
+  <p class="contact-sub" style="opacity:0; animation: fadeUp 0.7s ease forwards 0.6s;">Open to collabs, ideas, and interesting conversations.</p>
+  <div class="contact-links" style="opacity:0; animation: fadeUp 0.7s ease forwards 0.8s;">
+    <a href="mailto:philippmjc@gmail.com" class="contact-link">✉️ Email</a>
+    <a href="https://discordapp.com/users/980098932933808168" target="_blank" class="contact-link">💬 Discord</a>
+    <a href="https://www.tiktok.com/@ppm.mjc" target="_blank" class="contact-link">🎵 TikTok</a>
+  </div>
+</section>
+
+<footer>
+  <span class="footer-logo">PPM Development</span>
+  <span>© 2025 ppm — Built with intention.</span>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
