@@ -693,14 +693,21 @@
 
     <div class="project-card featured reveal">
       <div>
-        <div class="project-badge">⭐ Featured Project</div>
-        <h3 class="project-title">Peng AI</h3>
-        <p class="project-desc">An AI system I designed and built myself — not using a no-code tool, but writing the logic from scratch. Peng AI was my deep dive into understanding how AI actually works: training, decision-making, and building something that learns.</p>
+        <div style="display:flex; gap:0.6rem; align-items:center; margin-bottom:1.2rem;">
+          <div class="project-badge" style="margin-bottom:0;">⭐ Featured Project</div>
+          <div class="project-badge" style="margin-bottom:0; background: #00ff88; color: #0d0d0d;">🟢 Live</div>
+        </div>
+        <h3 class="project-title">Learn Go — Peng AI</h3>
+        <p class="project-desc">A fully functional AI chatbot I built from scratch using Python and Machine Learning. Peng AI teaches the ancient strategy game of Go (Weiqi) — from basic rules like Atari and Liberties to advanced tactics like Joseki, Tesuji, and Ko fights.</p>
+        <p class="project-desc" style="margin-top:0.8rem; font-size:0.88rem; color:rgba(255,255,255,0.45);">Built with a real ML pipeline (TF-IDF + Naive Bayes) that understands natural language. Features a live self-learning system — when the AI doesn't know an answer, it saves the question so I can train it in real time without restarting the server.</p>
         <div class="project-tech">
           <span class="tech-tag">Python</span>
-          <span class="tech-tag">Machine Learning</span>
-          <span class="tech-tag">Custom Architecture</span>
+          <span class="tech-tag">scikit-learn</span>
+          <span class="tech-tag">Flask</span>
+          <span class="tech-tag">NLP</span>
+          <span class="tech-tag">Railway</span>
         </div>
+        <a href="https://peng-ai-production.up.railway.app/" target="_blank" class="btn-primary" style="display:inline-block; margin-top:1.5rem;">Try Peng AI →</a>
       </div>
       <div class="project-visual">
         <div class="ai-visual">
@@ -777,7 +784,7 @@
   <h2 class="section-title" style="opacity:0; animation: fadeUp 0.7s ease forwards 0.4s;">Got a project idea?<br>Let's build it.</h2>
   <p class="contact-sub" style="opacity:0; animation: fadeUp 0.7s ease forwards 0.6s;">Open to collabs, ideas, and interesting conversations.</p>
   <div class="contact-links" style="opacity:0; animation: fadeUp 0.7s ease forwards 0.8s;">
-    <a href="mailto:philippmjc@gmail.com" class="contact-link">✉️ Email</a>
+    <a href="/cdn-cgi/l/email-protection#4f3f272623263f3f22252c0f28222e2623612c2022" class="contact-link">✉️ Email</a>
     <a href="https://discordapp.com/users/980098932933808168" target="_blank" class="contact-link">💬 Discord</a>
     <a href="https://www.tiktok.com/@ppm.mjc" target="_blank" class="contact-link">🎵 TikTok</a>
   </div>
@@ -788,18 +795,10 @@
   <span>© 2025 ppm — Built with intention.</span>
 </footer>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
   // Scroll reveal
   const reveals = document.querySelectorAll('.reveal');
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry, i) => {
       if (entry.isIntersecting) {
-        setTimeout(() => entry.target.classList.add('visible'), i * 80);
-      }
-    });
-  }, { threshold: 0.1 });
-  reveals.forEach(el => observer.observe(el));
-</script>
-
-</body>
-</html>
+        setTimeout(() => entry.target.
